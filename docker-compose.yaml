@@ -1,16 +1,11 @@
-version: '3.8'
 services:
   db:
     image: postgres
-    container_name: my-postgres-db
     environment:
       POSTGRES_USER: ${DATABASE_USER}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_NAME}
-    ports:
-      - ${DATABASE_PORT}:${DATABASE_PORT}
+      POSTGRES_DB: ${DATABASE_NAME}
     volumes:
-      - ${DATABASE_VOLUMES}
-
-volumes:
-  db-data:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432

@@ -7,15 +7,17 @@ import * as process from 'node:process';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: Number(process.env.DATABASE_PORT),
+      port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [],
+      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
   ],
