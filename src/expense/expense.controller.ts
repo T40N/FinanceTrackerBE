@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ExpenseService } from './expense.service';
-import { Expense } from './entities/expense.entity';
+import { Expense } from './expense.entity';
 import { FindExpenseDto } from './dtos/find-expense.dto';
 import { CreateExpenseDto } from './dtos/create-expense.dto';
-import { ExpenseFactory } from './factories/expense.factory';
+import { ExpenseFactory } from './expense.factory';
 
 @Controller('expense')
 export class ExpenseController {
@@ -22,7 +22,7 @@ export class ExpenseController {
     return this.expenseService.findById(id);
   }
 
-  @Get('year/')
+  @Get('year')
   findByYear(@Body() findExpenseDto: FindExpenseDto): Promise<Expense[]> {
     return this.expenseService.findByYear(findExpenseDto.date);
   }

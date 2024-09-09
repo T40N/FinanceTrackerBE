@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as process from 'node:process';
 import { join } from 'path';
 import { ExpenseModule } from './expense/expense.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ExpenseModule } from './expense/expense.module';
       synchronize: true,
     }),
     ExpenseModule,
+    CategoryModule,
   ],
   controllers: [],
   providers: [],

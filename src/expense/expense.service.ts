@@ -1,12 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Raw, Repository } from 'typeorm';
-import { Expense } from './entities/expense.entity';
+import { Expense } from './expense.entity';
 
 @Injectable()
 export class ExpenseService {
   constructor(
-    @InjectRepository(Expense) private expenseRepository: Repository<Expense>,
+    @InjectRepository(Expense)
+    private expenseRepository: Repository<Expense>,
   ) {}
 
   async findAll(): Promise<Expense[]> {
