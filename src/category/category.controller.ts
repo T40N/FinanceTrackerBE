@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Post,
   Put,
@@ -36,8 +37,7 @@ export class CategoryController {
 
   @Post()
   create(@Body() createCategoryDto: CreateCategoryDto): Promise<Category> {
-    const category = this.categoryFactory.fromDto(createCategoryDto);
-    return this.categoryService.save(category);
+    return this.categoryService.create(createCategoryDto);
   }
 
   @Put(':id')
@@ -45,9 +45,11 @@ export class CategoryController {
     @Param() id: string,
     @Body() createCategoryDto: CreateCategoryDto,
   ): Promise<Category> {
-    const category = this.categoryFactory.fromDto(createCategoryDto);
-    category.id = id;
-    return this.categoryService.save(category);
+    const categoryToUpdate = this.categoryService.findById(id);
+    if (!categoryToUpdate) {
+      throw new NotFoundException('Category not found');
+    }
+    return this.categoryService.update(id, createCategoryDto);
   }
 
   @Delete(':id')

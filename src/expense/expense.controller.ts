@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ExpenseService } from './expense.service';
 import { Expense } from './expense.entity';
 import { FindExpenseDto } from './dtos/find-expense.dto';
@@ -43,7 +52,23 @@ export class ExpenseController {
 
   @Post()
   create(@Body() createExpenseDto: CreateExpenseDto): Promise<Expense> {
-    const expense = this.expenseFactory.fromDto(createExpenseDto);
-    return this.expenseService.save(expense);
+    return this.expenseService.create(createExpenseDto);
+  }
+
+  @Put(':id')
+  update(
+    @Param('id') id: string,
+    @Body() createExpenseDto: CreateExpenseDto,
+  ): Promise<Expense> {
+    const expenseToUpdate = this.expenseService.findById(id);
+    if (!expenseToUpdate) {
+      throw new NotFoundException('Expense not found');
+    }
+    return this.expenseService.update(id, createExpenseDto);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: string): Promise<void> {
+    return this.expenseService.delete(id);
   }
 }
