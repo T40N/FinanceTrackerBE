@@ -1,1 +1,1 @@
-export type Category = 'groceries' | 'hobby';
+export type TCategory = 'groceries' | 'hobby';

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as process from 'node:process';
+import { join } from 'path';
+import { ExpenseModule } from './expense/expense.module';
 
 @Module({
   imports: [
@@ -17,11 +17,12 @@ import * as process from 'node:process';
       username: process.env.DATABASE_USER,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+      entities: [join(__dirname, '**', '*.entity.{ts,js}')],
       synchronize: true,
     }),
+    ExpenseModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

@@ -1,36 +1,49 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { ExpenseService } from './expense.service';
+import { Expense } from './entities/expense.entity';
+import { FindExpenseDto } from './dtos/find-expense.dto';
+import { CreateExpenseDto } from './dtos/create-expense.dto';
+import { ExpenseFactory } from './factories/expense.factory';
 
 @Controller('expense')
 export class ExpenseController {
+  constructor(
+    private readonly expenseService: ExpenseService,
+    private readonly expenseFactory: ExpenseFactory,
+  ) {}
+
   @Get()
-  findAll(): string {
-    return 'This action returns all expenses';
+  findAll(): Promise<Expense[]> {
+    return this.expenseService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): string {
-    return `This action returns a #${id} expense`;
+  findOne(@Param('id') id: string): Promise<Expense> {
+    return this.expenseService.findById(id);
   }
 
-  @Get('year/:year')
-  findByYear(@Param('year') year: string): string {
-    return `This action returns expenses for year ${year}`;
+  @Get('year/')
+  findByYear(@Body() findExpenseDto: FindExpenseDto): Promise<Expense[]> {
+    return this.expenseService.findByYear(findExpenseDto.date);
   }
 
-  @Get('year/:year/month/:month')
+  @Get('year/month')
   findByYearAndMonth(
-    @Param('year') year: string,
-    @Param('month') month: string,
-  ): string {
-    return `This action returns expenses for year ${year} and month ${month}`;
+    @Body() findExpenseDto: FindExpenseDto,
+  ): Promise<Expense[]> {
+    return this.expenseService.findByYearAndMonth(findExpenseDto.date);
   }
 
-  @Get('year/:year/month/:month/day/:day')
+  @Get('year/month/day')
   findByYearMonthAndDay(
-    @Param('year') year: string,
-    @Param('month') month: string,
-    @Param('day') day: string,
-  ): string {
-    return `This action returns expenses for year ${year}, month ${month} and day ${day}`;
+    @Body() findExpenseDto: FindExpenseDto,
+  ): Promise<Expense[]> {
+    return this.expenseService.findByYearMonthAndDay(findExpenseDto.date);
+  }
+
+  @Post()
+  create(@Body() createExpenseDto: CreateExpenseDto): Promise<Expense> {
+    const expense = this.expenseFactory.fromDto(createExpenseDto);
+    return this.expenseService.save(expense);
   }
 }
