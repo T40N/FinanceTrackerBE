@@ -2,8 +2,11 @@ import { NotFoundException } from '@nestjs/common';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { ExpenseService } from 'src/expense/expense.service';
+import { AbstractFactory } from 'src/abstract/abstract.factory';
 
-export class CategoryFactory {
+export class CategoryFactory
+  implements AbstractFactory<Category, CreateCategoryDto>
+{
   constructor(private readonly expenseService: ExpenseService) {}
 
   async fromDto(createCategoryDto: CreateCategoryDto): Promise<Category> {
