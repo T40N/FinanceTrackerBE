@@ -3,22 +3,17 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CategoryFactory } from './category.factory';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { Category } from './category.entity';
 
 @Controller('category')
 export class CategoryController {
-  constructor(
-    private readonly categoryService: CategoryService,
-    private readonly categoryFactory: CategoryFactory,
-  ) {}
+  constructor(private readonly categoryService: CategoryService) {}
 
   @Get()
   findAll(): Promise<Category[]> {
@@ -43,13 +38,9 @@ export class CategoryController {
   @Put(':id')
   update(
     @Param() id: string,
-    @Body() createCategoryDto: CreateCategoryDto,
+    @Body() updateCategoryDto: Partial<CreateCategoryDto>,
   ): Promise<Category> {
-    const categoryToUpdate = this.categoryService.findById(id);
-    if (!categoryToUpdate) {
-      throw new NotFoundException('Category not found');
-    }
-    return this.categoryService.update(id, createCategoryDto);
+    return this.categoryService.update(id, updateCategoryDto);
   }
 
   @Delete(':id')

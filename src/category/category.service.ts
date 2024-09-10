@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './category.entity';
-import { In, Repository } from 'typeorm';
-import { Expense } from 'src/expense/expense.entity';
+import { EntityMetadata, In, Repository } from 'typeorm';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { CategoryFactory } from './category.factory';
 
@@ -15,7 +14,16 @@ export class CategoryService {
   ) {}
 
   async findAll(): Promise<Category[]> {
-    return this.categoryRepository.find();
+    const metadata: EntityMetadata =
+      this.categoryRepository.manager.connection.getMetadata(Category);
+
+    // Wyciągamy nazwy wszystkich relacji
+    const relations = metadata.relations.map(
+      (relation) => relation.propertyPath,
+    );
+
+    // Wykonujemy zapytanie z dynamicznie wygenerowaną listą relacji
+    return this.categoryRepository.find({ relations });
   }
 
   async findById(id: string): Promise<Category> {
@@ -41,20 +49,15 @@ export class CategoryService {
 
   async update(
     id: string,
-    createCategoryDto: CreateCategoryDto,
+    updateCategoryDto: Partial<CreateCategoryDto>,
   ): Promise<Category> {
-    const category = await this.categoryFactory.fromDto(createCategoryDto);
-    category.id = id;
-    return this.categoryRepository.save(category);
-  }
-
-  async addExpense(category_id: string, expense: Expense): Promise<Category> {
-    const category = await this.findById(category_id);
-    if (!category) {
-      throw new Error('Category not found');
+    const categoryToUpdate = await this.findById(id);
+    if (!categoryToUpdate) {
+      throw new NotFoundException(`Category of id: ${id} not found`);
     }
-    category.expenses.push(expense);
-    return this.categoryRepository.save(category);
+
+    Object.assign(categoryToUpdate, updateCategoryDto);
+    return this.categoryRepository.save(categoryToUpdate);
   }
 
   async delete(id: string): Promise<void> {

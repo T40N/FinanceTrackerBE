@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  NotFoundException,
   Param,
   Post,
   Put,
@@ -12,14 +11,10 @@ import { ExpenseService } from './expense.service';
 import { Expense } from './expense.entity';
 import { FindExpenseDto } from './dtos/find-expense.dto';
 import { CreateExpenseDto } from './dtos/create-expense.dto';
-import { ExpenseFactory } from './expense.factory';
 
 @Controller('expense')
 export class ExpenseController {
-  constructor(
-    private readonly expenseService: ExpenseService,
-    private readonly expenseFactory: ExpenseFactory,
-  ) {}
+  constructor(private readonly expenseService: ExpenseService) {}
 
   @Get()
   findAll(): Promise<Expense[]> {
@@ -58,13 +53,17 @@ export class ExpenseController {
   @Put(':id')
   update(
     @Param('id') id: string,
-    @Body() createExpenseDto: CreateExpenseDto,
+    @Body() updateExpenseDto: Partial<CreateExpenseDto>,
   ): Promise<Expense> {
-    const expenseToUpdate = this.expenseService.findById(id);
-    if (!expenseToUpdate) {
-      throw new NotFoundException('Expense not found');
-    }
-    return this.expenseService.update(id, createExpenseDto);
+    return this.expenseService.update(id, updateExpenseDto);
+  }
+
+  @Put(':id/category/:category_id')
+  addCategory(
+    @Param('id') id: string,
+    @Param('category_id') categoryId: string,
+  ): Promise<Expense> {
+    return this.expenseService.addCategory(id, categoryId);
   }
 
   @Delete(':id')

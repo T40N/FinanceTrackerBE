@@ -4,11 +4,11 @@ import { Category } from './category.entity';
 import { CategoryController } from './category.controller';
 import { CategoryService } from './category.service';
 import { CategoryFactory } from './category.factory';
-import { ExpenseModule } from 'src/expense/expense.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Category]), ExpenseModule],
+  imports: [TypeOrmModule.forFeature([Category])],
   controllers: [CategoryController],
   providers: [CategoryService, CategoryFactory],
+  exports: [CategoryService],
 })
 export class CategoryModule {}

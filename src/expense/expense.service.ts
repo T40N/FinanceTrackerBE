@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Raw, Repository } from 'typeorm';
+import { EntityMetadata, In, Raw, Repository } from 'typeorm';
 import { Expense } from './expense.entity';
 import { CreateExpenseDto } from './dtos/create-expense.dto';
 import { ExpenseFactory } from './expense.factory';
+import { CategoryService } from 'src/category/category.service';
 
 @Injectable()
 export class ExpenseService {
@@ -11,10 +12,21 @@ export class ExpenseService {
     @InjectRepository(Expense)
     private expenseRepository: Repository<Expense>,
     private expenseFactory: ExpenseFactory,
+    private categoryService: CategoryService,
   ) {}
 
   async findAll(): Promise<Expense[]> {
-    return this.expenseRepository.find();
+    // Pobieramy metadane encji Expense
+    const metadata: EntityMetadata =
+      this.expenseRepository.manager.connection.getMetadata(Expense);
+
+    // Wyciągamy nazwy wszystkich relacji
+    const relations = metadata.relations.map(
+      (relation) => relation.propertyPath,
+    );
+
+    // Wykonujemy zapytanie z dynamicznie wygenerowaną listą relacji
+    return this.expenseRepository.find({ relations });
   }
 
   async findById(id: string): Promise<Expense> {
@@ -73,14 +85,36 @@ export class ExpenseService {
 
   async update(
     id: string,
-    createExpenseDto: Partial<CreateExpenseDto>,
+    updateExpenseDto: Partial<CreateExpenseDto>,
   ): Promise<Expense> {
     const expenseToUpdate = await this.findById(id);
     if (!expenseToUpdate) {
       throw new NotFoundException('Expense not found');
     }
 
-    Object.assign(expenseToUpdate, createExpenseDto);
+    Object.assign(expenseToUpdate, updateExpenseDto);
+    return this.expenseRepository.save(expenseToUpdate);
+  }
+
+  async addCategory(id: string, categoryId: string): Promise<Expense> {
+    const expenseToUpdate = await this.expenseRepository.findOne({
+      where: { id: id },
+      relations: ['categories'], // Ładowanie relacji kategorii
+    });
+    if (!expenseToUpdate) {
+      throw new NotFoundException(`Expense of id: ${id} not found`);
+    }
+
+    const category = await this.categoryService.findById(categoryId);
+
+    if (!category) {
+      throw new NotFoundException(`Category of id: ${categoryId} not found`);
+    }
+
+    if (!expenseToUpdate.categories.some((c) => c.id === categoryId)) {
+      expenseToUpdate.categories.push(category);
+    }
+
     return this.expenseRepository.save(expenseToUpdate);
   }
 
