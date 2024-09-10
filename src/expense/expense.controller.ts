@@ -1,16 +1,20 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ExpenseService } from './expense.service';
-import { Expense } from './entities/expense.entity';
+import { Expense } from './expense.entity';
 import { FindExpenseDto } from './dtos/find-expense.dto';
 import { CreateExpenseDto } from './dtos/create-expense.dto';
-import { ExpenseFactory } from './factories/expense.factory';
 
 @Controller('expense')
 export class ExpenseController {
-  constructor(
-    private readonly expenseService: ExpenseService,
-    private readonly expenseFactory: ExpenseFactory,
-  ) {}
+  constructor(private readonly expenseService: ExpenseService) {}
 
   @Get()
   findAll(): Promise<Expense[]> {
@@ -22,7 +26,7 @@ export class ExpenseController {
     return this.expenseService.findById(id);
   }
 
-  @Get('year/')
+  @Get('year')
   findByYear(@Body() findExpenseDto: FindExpenseDto): Promise<Expense[]> {
     return this.expenseService.findByYear(findExpenseDto.date);
   }
@@ -43,7 +47,27 @@ export class ExpenseController {
 
   @Post()
   create(@Body() createExpenseDto: CreateExpenseDto): Promise<Expense> {
-    const expense = this.expenseFactory.fromDto(createExpenseDto);
-    return this.expenseService.save(expense);
+    return this.expenseService.create(createExpenseDto);
+  }
+
+  @Put(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateExpenseDto: Partial<CreateExpenseDto>,
+  ): Promise<Expense> {
+    return this.expenseService.update(id, updateExpenseDto);
+  }
+
+  @Put(':id/category/:category_id')
+  addCategory(
+    @Param('id') id: string,
+    @Param('category_id') categoryId: string,
+  ): Promise<Expense> {
+    return this.expenseService.addCategory(id, categoryId);
+  }
+
+  @Delete(':id')
+  delete(@Param('id') id: string): Promise<void> {
+    return this.expenseService.delete(id);
   }
 }

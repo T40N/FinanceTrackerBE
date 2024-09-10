@@ -14,5 +14,5 @@ export class CreateExpenseDto {
   date: Date;
 
   @ApiProperty()
-  category: string;
+  categoriesIds: string[];
 }

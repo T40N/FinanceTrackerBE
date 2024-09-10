@@ -1,7 +1,10 @@
+import { Category } from 'src/category/category.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -22,8 +25,9 @@ export class Expense {
   @Column()
   date: Date;
 
-  @Column()
-  category: string;
+  @ManyToMany(() => Category, (category) => category.expenses)
+  @JoinTable()
+  categories: Category[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
