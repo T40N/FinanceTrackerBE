@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { ExpenseService } from './expense.service';
 import { Expense } from './expense.entity';
-import { FindExpenseDto } from './dtos/find-expense.dto';
 import { CreateExpenseDto } from './dtos/create-expense.dto';
 
 @Controller('expense')
@@ -26,23 +25,26 @@ export class ExpenseController {
     return this.expenseService.findById(id);
   }
 
-  @Get('year')
-  findByYear(@Body() findExpenseDto: FindExpenseDto): Promise<Expense[]> {
-    return this.expenseService.findByYear(findExpenseDto.date);
+  @Get('year/:year')
+  findByYear(@Param('year') year: string): Promise<Expense[]> {
+    return this.expenseService.findByYear(year);
   }
 
-  @Get('year/month')
+  @Get('year/:year/month/:month')
   findByYearAndMonth(
-    @Body() findExpenseDto: FindExpenseDto,
+    @Param('year') year: string,
+    @Param('month') month: string,
   ): Promise<Expense[]> {
-    return this.expenseService.findByYearAndMonth(findExpenseDto.date);
+    return this.expenseService.findByYearAndMonth(year, month);
   }
 
-  @Get('year/month/day')
+  @Get('year/:year/month/:month/day/:day')
   findByYearMonthAndDay(
-    @Body() findExpenseDto: FindExpenseDto,
+    @Param('year') year: string,
+    @Param('month') month: string,
+    @Param('day') day: string,
   ): Promise<Expense[]> {
-    return this.expenseService.findByYearMonthAndDay(findExpenseDto.date);
+    return this.expenseService.findByYearMonthAndDay(year, month, day);
   }
 
   @Post()

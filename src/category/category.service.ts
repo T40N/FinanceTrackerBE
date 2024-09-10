@@ -1,66 +1,26 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectDataSource } from '@nestjs/typeorm';
 import { Category } from './category.entity';
-import { EntityMetadata, In, Repository } from 'typeorm';
+import { DataSource } from 'typeorm';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { CategoryFactory } from './category.factory';
+import { AbstractService } from 'src/abstract/abstract.service';
 
 @Injectable()
-export class CategoryService {
+export class CategoryService extends AbstractService<
+  Category,
+  CreateCategoryDto
+> {
   constructor(
-    @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
+    @InjectDataSource() dataSource: DataSource,
     private categoryFactory: CategoryFactory,
-  ) {}
-
-  async findAll(): Promise<Category[]> {
-    const metadata: EntityMetadata =
-      this.categoryRepository.manager.connection.getMetadata(Category);
-
-    // Wyciągamy nazwy wszystkich relacji
-    const relations = metadata.relations.map(
-      (relation) => relation.propertyPath,
-    );
-
-    // Wykonujemy zapytanie z dynamicznie wygenerowaną listą relacji
-    return this.categoryRepository.find({ relations });
-  }
-
-  async findById(id: string): Promise<Category> {
-    return this.categoryRepository.findOne({
-      where: { id },
-    });
-  }
-
-  async findByIds(ids: string[]): Promise<Category[]> {
-    return this.categoryRepository.findBy({ id: In(ids) });
+  ) {
+    super(Category, dataSource, categoryFactory, 'Category');
   }
 
   async findByName(name: string): Promise<Category[]> {
-    return this.categoryRepository.find({
+    return this.repository.find({
       where: { name },
     });
-  }
-
-  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
-    const category = await this.categoryFactory.fromDto(createCategoryDto);
-    return this.categoryRepository.save(category);
-  }
-
-  async update(
-    id: string,
-    updateCategoryDto: Partial<CreateCategoryDto>,
-  ): Promise<Category> {
-    const categoryToUpdate = await this.findById(id);
-    if (!categoryToUpdate) {
-      throw new NotFoundException(`Category of id: ${id} not found`);
-    }
-
-    Object.assign(categoryToUpdate, updateCategoryDto);
-    return this.categoryRepository.save(categoryToUpdate);
-  }
-
-  async delete(id: string): Promise<void> {
-    await this.categoryRepository.delete(id);
   }
 }
