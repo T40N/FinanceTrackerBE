@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -21,12 +22,12 @@ export class CategoryController {
   }
 
   @Get(':id')
-  findOne(@Param() id: string): Promise<Category> {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string): Promise<Category> {
     return this.categoryService.findById(id);
   }
 
   @Get('name/:name')
-  findByName(@Param() name: string): Promise<Category[]> {
+  findByName(@Param('name') name: string): Promise<Category[]> {
     return this.categoryService.findByName(name);
   }
 
@@ -37,14 +38,14 @@ export class CategoryController {
 
   @Put(':id')
   update(
-    @Param() id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateCategoryDto: Partial<CreateCategoryDto>,
   ): Promise<Category> {
     return this.categoryService.update(id, updateCategoryDto);
   }
 
   @Delete(':id')
-  delete(@Param() id: string): Promise<void> {
+  delete(@Param('id', new ParseUUIDPipe()) id: string): Promise<void> {
     return this.categoryService.delete(id);
   }
 }

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -21,7 +22,7 @@ export class ExpenseController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Expense> {
+  findOne(@Param('id', new ParseUUIDPipe()) id: string): Promise<Expense> {
     return this.expenseService.findById(id);
   }
 
@@ -54,7 +55,7 @@ export class ExpenseController {
 
   @Put(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateExpenseDto: Partial<CreateExpenseDto>,
   ): Promise<Expense> {
     return this.expenseService.update(id, updateExpenseDto);
@@ -62,14 +63,14 @@ export class ExpenseController {
 
   @Put(':id/category/:category_id')
   addCategory(
-    @Param('id') id: string,
-    @Param('category_id') categoryId: string,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Param('category_id', new ParseUUIDPipe()) categoryId: string,
   ): Promise<Expense> {
     return this.expenseService.addCategory(id, categoryId);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string): Promise<void> {
+  delete(@Param('id', new ParseUUIDPipe()) id: string): Promise<void> {
     return this.expenseService.delete(id);
   }
 }
