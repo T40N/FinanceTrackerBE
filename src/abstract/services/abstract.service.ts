@@ -8,9 +8,9 @@ import {
   In,
   Repository,
 } from 'typeorm';
-import { Identifiable } from './interfaces/identifiable.interface';
+import { Identifiable } from '../interfaces/identifiable.interface';
 import { NotFoundException } from '@nestjs/common';
-import { AbstractFactory } from './abstract.factory';
+import { AbstractFactory } from '../factories/abstract.factory';
 
 export abstract class AbstractService<T extends Identifiable, CreateDTO = any> {
   protected repository: Repository<T>;

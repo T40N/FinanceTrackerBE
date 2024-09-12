@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, Raw } from 'typeorm';
-import { Expense } from './expense.entity';
-import { ExpenseFactory } from './expense.factory';
-import { CategoryService } from 'src/category/category.service';
-import { AbstractService } from 'src/abstract/abstract.service';
-import { CreateExpenseDto } from './dtos/create-expense.dto';
+import { Expense } from '../entities/expense.entity';
+import { CreateExpenseDto } from '../dtos/create-expense.dto';
+import { AbstractService } from 'src/abstract/services/abstract.service';
+import { ExpenseFactory } from '../factories/expense.factory';
+import { CategoryService } from 'src/category/services/category.service';
 
 @Injectable()
 export class ExpenseService extends AbstractService<Expense, CreateExpenseDto> {
