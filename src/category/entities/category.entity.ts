@@ -1,4 +1,4 @@
-import { Expense } from 'src/expense/expense.entity';
+import { Expense } from 'src/expense/entities/expense.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from 'typeorm';
 
 @Entity()

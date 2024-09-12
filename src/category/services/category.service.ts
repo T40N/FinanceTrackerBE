@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { Category } from './category.entity';
+import { AbstractService } from 'src/abstract/services/abstract.service';
 import { DataSource } from 'typeorm';
-import { CreateCategoryDto } from './dtos/create-category.dto';
-import { CategoryFactory } from './category.factory';
-import { AbstractService } from 'src/abstract/abstract.service';
+import { Category } from '../entities/category.entity';
+import { CreateCategoryDto } from '../dtos/create-category.dto';
+import { CategoryFactory } from '../factories/category.factory';
 
 @Injectable()
 export class CategoryService extends AbstractService<

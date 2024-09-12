@@ -8,9 +8,9 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ExpenseService } from './expense.service';
-import { Expense } from './expense.entity';
-import { CreateExpenseDto } from './dtos/create-expense.dto';
+import { ExpenseService } from '../services/expense.service';
+import { Expense } from '../entities/expense.entity';
+import { CreateExpenseDto } from '../dtos/create-expense.dto';
 
 @Controller('expense')
 export class ExpenseController {

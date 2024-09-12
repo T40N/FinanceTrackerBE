@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { ExpenseController } from './expense.controller';
-import { ExpenseService } from './expense.service';
+import { ExpenseService } from './services/expense.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Expense } from './expense.entity';
-import { ExpenseFactory } from './expense.factory';
+import { Expense } from './entities/expense.entity';
 import { CategoryModule } from 'src/category/category.module';
+import { ExpenseController } from './controllers/expense.controller';
+import { ExpenseFactory } from './factories/expense.factory';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Expense]), CategoryModule],

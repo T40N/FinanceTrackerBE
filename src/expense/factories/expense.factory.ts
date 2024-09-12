@@ -1,8 +1,8 @@
 import { NotFoundException } from '@nestjs/common';
-import { CreateExpenseDto } from './dtos/create-expense.dto';
-import { Expense } from './expense.entity';
-import { CategoryService } from 'src/category/category.service';
-import { AbstractFactory } from 'src/abstract/abstract.factory';
+import { Expense } from '../entities/expense.entity';
+import { CreateExpenseDto } from '../dtos/create-expense.dto';
+import { CategoryService } from 'src/category/services/category.service';
+import { AbstractFactory } from 'src/abstract/factories/abstract.factory';
 
 export class ExpenseFactory
   implements AbstractFactory<Expense, CreateExpenseDto>

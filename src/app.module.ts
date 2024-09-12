@@ -5,7 +5,7 @@ import * as process from 'node:process';
 import { join } from 'path';
 import { ExpenseModule } from './expense/expense.module';
 import { CategoryModule } from './category/category.module';
-import { LoggerMiddleware } from './logger/logger.middleware';
+import { LoggerMiddleware } from './logger/moddlewares/logger.middleware';
 
 @Module({
   imports: [
