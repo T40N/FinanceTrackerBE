@@ -1,32 +1,19 @@
-import { InjectDataSource } from '@nestjs/typeorm';
 import {
-  DataSource,
   DeepPartial,
   EntityMetadata,
-  EntityTarget,
   FindOptionsWhere,
   In,
   Repository,
 } from 'typeorm';
 import { Identifiable } from '../interfaces/identifiable.interface';
-import { NotFoundException } from '@nestjs/common';
 import { AbstractFactory } from '../factories/abstract.factory';
+import { NotFoundException } from '@nestjs/common';
 
 export abstract class AbstractService<T extends Identifiable, CreateDTO = any> {
-  protected repository: Repository<T>;
-  protected resourceName: string;
-  protected factory: AbstractFactory<T, CreateDTO>;
-
   constructor(
-    private readonly entityClass: EntityTarget<T>,
-    @InjectDataSource() protected readonly dataSource: DataSource,
-    factory: AbstractFactory<T>,
-    resourceName?: string,
-  ) {
-    this.repository = this.dataSource.getRepository(entityClass);
-    this.factory = factory;
-    this.resourceName = resourceName || 'Resource';
-  }
+    protected readonly repository: Repository<T>,
+    protected readonly factory: AbstractFactory<T, CreateDTO>,
+  ) {}
 
   async create(data: CreateDTO): Promise<T> {
     const resource = await this.factory.fromDto(data);
@@ -35,7 +22,7 @@ export abstract class AbstractService<T extends Identifiable, CreateDTO = any> {
 
   async findAll(): Promise<T[]> {
     const metadata: EntityMetadata =
-      this.repository.manager.connection.getMetadata(this.entityClass);
+      this.repository.manager.connection.getMetadata(this.repository.target);
 
     const relations = metadata.relations.map(
       (relation) => relation.propertyPath,
@@ -58,7 +45,7 @@ export abstract class AbstractService<T extends Identifiable, CreateDTO = any> {
     const resourceToUpdate = await this.findById(id);
     if (!resourceToUpdate) {
       throw new NotFoundException(
-        `${this.resourceName} of id: ${id} not found`,
+        `${this.repository.target.toString()} of id: ${id} not found`,
       );
     }
 

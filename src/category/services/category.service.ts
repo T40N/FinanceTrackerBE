@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 import { AbstractService } from 'src/abstract/services/abstract.service';
-import { DataSource } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Category } from '../entities/category.entity';
 import { CreateCategoryDto } from '../dtos/create-category.dto';
 import { CategoryFactory } from '../factories/category.factory';
@@ -12,10 +12,11 @@ export class CategoryService extends AbstractService<
   CreateCategoryDto
 > {
   constructor(
-    @InjectDataSource() dataSource: DataSource,
-    private categoryFactory: CategoryFactory,
+    @InjectRepository(Category)
+    protected readonly repository: Repository<Category>,
+    protected readonly factory: CategoryFactory,
   ) {
-    super(Category, dataSource, categoryFactory, 'Category');
+    super(repository, factory);
   }
 
   async findByName(name: string): Promise<Category[]> {
