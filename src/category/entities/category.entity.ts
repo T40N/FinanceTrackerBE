@@ -11,4 +11,7 @@ export class Category {
 
   @ManyToMany(() => Expense, (expense) => expense.categories)
   expenses: Expense[];
+
+  @Column({ type: 'timestamp' })
+  created_at: Date;
 }

@@ -10,5 +10,6 @@ import { ExpenseFactory } from './factories/expense.factory';
   imports: [TypeOrmModule.forFeature([Expense]), CategoryModule],
   controllers: [ExpenseController],
   providers: [ExpenseService, ExpenseFactory],
+  exports: [ExpenseService],
 })
 export class ExpenseModule {}

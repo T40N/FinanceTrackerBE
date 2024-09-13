@@ -5,7 +5,7 @@ import {
   In,
   Repository,
 } from 'typeorm';
-import { Identifiable } from '../interfaces/identifiable.interface';
+import { Identifiable } from '../definitions/identifiable.interface';
 import { AbstractFactory } from '../factories/abstract.factory';
 import { NotFoundException } from '@nestjs/common';
 
