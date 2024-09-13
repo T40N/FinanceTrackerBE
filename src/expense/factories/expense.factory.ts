@@ -1,9 +1,10 @@
-import { NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Expense } from '../entities/expense.entity';
 import { CreateExpenseDto } from '../dtos/create-expense.dto';
 import { CategoryService } from 'src/category/services/category.service';
 import { AbstractFactory } from 'src/abstract/factories/abstract.factory';
 
+@Injectable()
 export class ExpenseFactory
   implements AbstractFactory<Expense, CreateExpenseDto>
 {

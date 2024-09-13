@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource, Raw } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Raw, Repository } from 'typeorm';
 import { Expense } from '../entities/expense.entity';
 import { CreateExpenseDto } from '../dtos/create-expense.dto';
 import { AbstractService } from 'src/abstract/services/abstract.service';
@@ -10,11 +10,12 @@ import { CategoryService } from 'src/category/services/category.service';
 @Injectable()
 export class ExpenseService extends AbstractService<Expense, CreateExpenseDto> {
   constructor(
-    @InjectDataSource() dataSource: DataSource,
-    private expenseFactory: ExpenseFactory,
-    private categoryService: CategoryService,
+    @InjectRepository(Expense)
+    protected readonly repository: Repository<Expense>,
+    protected readonly factory: ExpenseFactory,
+    private readonly categoryService: CategoryService,
   ) {
-    super(Expense, dataSource, expenseFactory, 'Expense');
+    super(repository, factory);
   }
 
   async findByYear(year: string): Promise<Expense[]> {
